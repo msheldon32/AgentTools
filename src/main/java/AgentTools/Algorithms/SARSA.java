@@ -29,7 +29,9 @@ public class SARSA extends RLAlgorithm {
     }
 
     protected void findNextAction(Object state, Policy policy) {
-        if (policy.getType(this) == PolicyType.Optimal) {
+
+        PolicyType policyType = policy.getType(this);
+        if (policyType == PolicyType.Optimal) {
             if (!this.qFunction.containsKey(state)) {
                 this.nextAction = this.actionSpace.getRealization(policy.getRandom());
                 return;
@@ -50,11 +52,11 @@ public class SARSA extends RLAlgorithm {
             }
 
             this.nextAction =  bestActions.get(policy.getRandom().nextInt(bestActions.size()));
-        } else if (policy.getType(this) == PolicyType.Random) {
+        } else if (policyType == PolicyType.Random) {
             this.nextAction = this.actionSpace.getRealization(policy.getRandom());
-        } else if (policy.getType(this) == PolicyType.FixedStateAction) {
+        } else if (policyType == PolicyType.FixedStateAction) {
             this.nextAction = policy.getAction(state);
-        } else if (policy.getType(this) == PolicyType.Probablistic) {
+        } else if (policyType == PolicyType.Probablistic) {
             this.nextAction = policy.getCdf(state).generate();
         }
     }
@@ -87,6 +89,9 @@ public class SARSA extends RLAlgorithm {
         }
 
         double new_q = (1-this.learningRate) * old_q + (this.learningRate * (reward + (this.discountRate * action_q)));
+        if (!this.qFunction.containsKey(startState)) {
+            this.qFunction.put(startState, new HashMap<Object,Double>());
+        }
         this.qFunction.get(startState).put(action, new_q);
     }
 }

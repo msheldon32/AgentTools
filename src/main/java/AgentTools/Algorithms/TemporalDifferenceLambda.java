@@ -33,13 +33,15 @@ public class TemporalDifferenceLambda extends RLAlgorithm {
 
     @Override
     public Object getAction(Object state, Policy policy) {
-        if (policy.getType(this) == PolicyType.Optimal) {
+        PolicyType policyType = policy.getType(this);
+
+        if (policyType == PolicyType.Optimal) {
             throw new RuntimeException("Invalid Policy for Algorithm");
-        } else if (policy.getType(this) == PolicyType.Random) {
+        } else if (policyType == PolicyType.Random) {
             return this.actionSpace.getRealization(policy.getRandom());
-        } else if (policy.getType(this) == PolicyType.FixedStateAction) {
+        } else if (policyType == PolicyType.FixedStateAction) {
             return policy.getAction(state);
-        } else if (policy.getType(this) == PolicyType.Probablistic) {
+        } else if (policyType == PolicyType.Probablistic) {
             return policy.getCdf(state).generate();
         }
 

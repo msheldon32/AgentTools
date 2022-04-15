@@ -21,4 +21,8 @@ public class Environment {
     public double applyAction(Object action) {
         return 0.0;
     }
+
+    public void reset() {
+        return;
+    }
 }

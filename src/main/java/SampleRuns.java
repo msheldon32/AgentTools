@@ -36,11 +36,15 @@ public class SampleRuns {
                 randAgent.reinforce(reward);
             }
 
+            model.reset();
+
             for (int pull_no = 0; pull_no < num_pulls; pull_no++) {
                 qAgent.setState(model.getState());
                 double reward = model.applyAction(qAgent.takeAction());
                 qAgent.reinforce(reward);
             }
+
+            model.reset();
 
             for (int pull_no = 0; pull_no < num_pulls; pull_no++) {
                 sarsaAgent.setState(model.getState());
@@ -48,17 +52,21 @@ public class SampleRuns {
                 sarsaAgent.reinforce(reward);
             }
 
-            for (int pull_no = 0; pull_no < num_pulls; pull_no++) {
+            model.reset();
+
+            /*for (int pull_no = 0; pull_no < num_pulls; pull_no++) {
                 tdlAgent.setState(model.getState());
                 double reward = model.applyAction(tdlAgent.takeAction());
                 tdlAgent.reinforce(reward);
             }
 
+            model.reset();
+
             for (int pull_no = 0; pull_no < num_pulls; pull_no++) {
                 tdzAgent.setState(model.getState());
                 double reward = model.applyAction(tdzAgent.takeAction());
                 tdzAgent.reinforce(reward);
-            }
+            }*/
         }
 
         System.out.format("Total reward (Random): %f\n", randAgent.getTotalReward());
