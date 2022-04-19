@@ -88,7 +88,7 @@ public class SARSA extends RLAlgorithm {
             old_q = this.qFunction.get(startState).get(action);
         }
 
-        double new_q = (1-this.learningRate) * old_q + (this.learningRate * (reward + (this.discountRate * action_q)));
+        double new_q = (1-this.learningRate) * old_q + (this.learningRate * (reward + ((1-this.discountRate) * action_q)));
         if (!this.qFunction.containsKey(startState)) {
             this.qFunction.put(startState, new HashMap<Object,Double>());
         }

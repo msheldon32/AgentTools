@@ -51,4 +51,8 @@ public class Agent {
     public double getTotalReward() {
         return this.totalReward;
     }
+
+    public RLAlgorithm getAlgorithm() {
+        return this.algorithm;
+    }
 }

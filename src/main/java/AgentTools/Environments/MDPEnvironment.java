@@ -45,11 +45,23 @@ public class MDPEnvironment extends Environment {
             reward = this.rewardMatrix.get(this.state).get(action);
         }
 
+        //System.out.println(this.state);
+
         HashMap<Object, Double> transitions = this.transitionMatrix.get(this.state).get(action);
         Cdf<Object> stateCdf = new Cdf<Object>(this.random);
         stateCdf.fromHashMap(transitions);
+        Object start_state = this.state;
         this.state = stateCdf.generate();
+        if (this.state == null) {
+            System.out.println("Transitioning to null!");
+            System.out.println(start_state);
+            System.out.println(action);
+        }
         return reward;
+    }
+
+    public void setState(Object state) {
+        this.state = state;
     }
 
     @Override

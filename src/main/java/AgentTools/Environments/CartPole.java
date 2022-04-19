@@ -54,6 +54,6 @@ public class CartPole extends Environment{
 
     @Override
     public double applyAction(Object action) {
-        return 0.0
+        return 0.0;
     }
 }
