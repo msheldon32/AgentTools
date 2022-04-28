@@ -15,4 +15,9 @@ public class FloatSpace extends ValueSpace<Double> {
     public Double getRealization(Random random) {
         return random.nextDouble()*(upperBound-min)+min;
     }
+
+    @Override
+    public int getSize() {
+        return Integer.MAX_VALUE;
+    }
 }

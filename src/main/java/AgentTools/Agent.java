@@ -28,7 +28,7 @@ public class Agent {
         this.action = null;
         this.prevAction = null;
         this.environment = environment;
-        algorithm.setModel(this.environment);
+        algorithm.setEnvironment(this.environment);
     }
 
     public void setState(Object newState) {

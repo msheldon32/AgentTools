@@ -77,7 +77,7 @@ public class TemporalDifferenceLambda extends RLAlgorithm {
         for (Object s: this.stateFunction.keySet()) {
             double prev_v = this.stateFunction.get(s);
             this.stateFunction.put(s, prev_v + this.eFunction.get(s)*delta*this.learningRate);
-            this.eFunction.put(s, this.lambda*(1-this.discountRate)*this.eFunction.get(s));
+            this.eFunction.put(s, this.lambda*this.discountRate*this.eFunction.get(s));
         }
     }
 }

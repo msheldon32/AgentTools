@@ -79,7 +79,7 @@ public class QLearning extends RLAlgorithm {
             this.qFunction.put(startState, new HashMap<Object, Double>());
         }
 
-        double temp_diff = (reward + (1-this.discountRate)*action_q)-old_q;
+        double temp_diff = (reward + (this.discountRate*action_q))-old_q;
 
         double new_q = old_q + (this.learningRate*temp_diff);
         this.qFunction.get(startState).put(action, new_q);

@@ -21,7 +21,7 @@ public class RLAlgorithm {
 
     }
 
-    public void setModel(Environment environment) {
+    public void setEnvironment(Environment environment) {
         this.actionSpace = environment.getActionSpace();
         this.stateSpace = environment.getStateSpace();
     }

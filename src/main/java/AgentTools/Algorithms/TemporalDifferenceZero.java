@@ -56,7 +56,7 @@ public class TemporalDifferenceZero  extends RLAlgorithm {
             old_v = this.stateFunction.get(startState);
         }
 
-        double new_v = (1-this.learningRate) * old_v + (this.learningRate * (reward + ((1-this.discountRate) * end_v)));
+        double new_v = (1-this.learningRate) * old_v + (this.learningRate * (reward + (this.discountRate * end_v)));
         this.stateFunction.put(startState, new_v);
     }
 }

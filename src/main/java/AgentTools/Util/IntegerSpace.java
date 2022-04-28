@@ -1,6 +1,9 @@
 package AgentTools.Util;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 public class IntegerSpace extends ValueSpace<Integer> {
     protected int min;
@@ -14,5 +17,15 @@ public class IntegerSpace extends ValueSpace<Integer> {
     @Override
     public Integer getRealization(Random random) {
         return random.nextInt(upperBound-min) + min;
+    }
+
+    @Override
+    public Iterator<Integer> iterator() {
+        return IntStream.range(this.min, this.upperBound).iterator();
+    }
+
+    @Override
+    public int getSize() {
+        return upperBound-min;
     }
 }

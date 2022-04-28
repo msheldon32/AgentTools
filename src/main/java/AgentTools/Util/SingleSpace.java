@@ -18,4 +18,9 @@ public class SingleSpace extends ValueSpace<Integer> {
     public Integer getRealization(Random random) {
         return this.value;
     }
+
+    @Override
+    public int getSize() {
+        return 1;
+    }
 }
