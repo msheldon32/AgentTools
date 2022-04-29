@@ -33,7 +33,7 @@ public class MDPModel extends Model {
         this.nStates = this.actionSpace.getSize();
     }
 
-    public void addTransition(Object startState, Object endState, Object action, double probability, double reward) {
+    public void addTransition(Object startState, Object endState, Object action, double probability) {
         if (!this.transitionMatrix.containsKey(startState)) {
             this.transitionMatrix.put(startState, new HashMap<Object, HashMap<Object, Double>>());
             this.transitionMatrix.get(startState).put(action, new HashMap<Object, Double>());
@@ -41,7 +41,9 @@ public class MDPModel extends Model {
             this.transitionMatrix.get(startState).put(action, new HashMap<Object, Double>());
         }
         this.transitionMatrix.get(startState).get(action).put(endState, probability);
+    }
 
+    public void setReward(Object startState, Object action, double reward) {
         if(!this.rewardMatrix.containsKey(startState)) {
             this.rewardMatrix.put(startState, new HashMap<Object, Double>());
         }
