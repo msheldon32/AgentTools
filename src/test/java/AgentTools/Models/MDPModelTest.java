@@ -4,6 +4,7 @@ import AgentTools.Policies.Policy;
 import AgentTools.Policies.StateActionPolicy;
 import AgentTools.Util.IntegerSpace;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -46,7 +47,7 @@ class MDPModelTest {
             }
         }
 
-        this.nRuns = 500;
+        this.nRuns = 1000;
         this.tolerance = 0.05;
     }
 
@@ -56,7 +57,7 @@ class MDPModelTest {
         this.emptyMDP.addTransition(1,2,1,1.0);
         this.emptyMDP.setState(1);
         this.emptyMDP.applyAction(1);
-        assertEquals(this.emptyMDP.getState(),2);
+        assertEquals(2,this.emptyMDP.getState());
     }
 
     @org.junit.jupiter.api.Test
@@ -66,8 +67,8 @@ class MDPModelTest {
             for (int action = 1; action <=3; action++) {
                 this.deterministicMDP.setState(startState);
                 double reward = this.deterministicMDP.applyAction(action);
-                assertEquals(this.deterministicMDP.getState(), action);
-                assertEquals(reward, action);
+                assertEquals(action, this.deterministicMDP.getState());
+                assertEquals(action, reward);
             }
         }
 
@@ -80,16 +81,17 @@ class MDPModelTest {
                     this.probablisticMDP.setState(startState);
                     totalReward += this.probablisticMDP.applyAction(action);
                     int endState = (Integer) this.probablisticMDP.getState();
-                    stateCounts[endState]++;
+                    stateCounts[endState-1]++;
                 }
-                assertEquals(totalReward,action*this.nRuns);
+                assertEquals(action*this.nRuns,totalReward);
                 for (int endState = 1; endState <=3; endState++) {
                     if (endState == action) {
-                        assertTrue(stateCounts[endState] >= (0.5-tolerance)*this.nRuns);
-                        assertTrue(stateCounts[endState] <= (0.5+tolerance)*this.nRuns);
+                        //System.out.format("Expecting 50%, received count of: %d\n", )
+                        assertTrue(stateCounts[endState-1] >= (0.5-this.tolerance)*this.nRuns);
+                        assertTrue(stateCounts[endState-1] <= (0.5+this.tolerance)*this.nRuns);
                     } else {
-                        assertTrue(stateCounts[endState] >= (0.25-tolerance)*this.nRuns);
-                        assertTrue(stateCounts[endState] <= (0.25+tolerance)*this.nRuns);
+                        assertTrue(stateCounts[endState-1] >= (0.25-this.tolerance)*this.nRuns);
+                        assertTrue(stateCounts[endState-1] <= (0.25+this.tolerance)*this.nRuns);
                     }
                 }
             }
@@ -102,7 +104,7 @@ class MDPModelTest {
         // setting MDP state works
         for (int state = 1; state <=3; state++) {
             this.deterministicMDP.setState(state);
-            assertEquals(this.deterministicMDP.getState(),state);
+            assertEquals(state,this.deterministicMDP.getState());
         }
     }
 
@@ -123,7 +125,7 @@ class MDPModelTest {
         // get state returns correct value after setState()
         for (int state = 1; state <=3; state++) {
             this.deterministicMDP.setState(state);
-            assertEquals(this.deterministicMDP.getState(),state);
+            assertEquals(state, this.deterministicMDP.getState());
         }
     }
 
@@ -133,9 +135,7 @@ class MDPModelTest {
 
         HashMap<Object, Object> sameActionMap = new HashMap<Object, Object>();
         for (int state=1; state <= 3; state++) {
-            for (int action = 1; action <=3; action++) {
-                sameActionMap.put(state, action);
-            }
+            sameActionMap.put(state, state);
         }
         Policy sameActionPolicy = new StateActionPolicy(sameActionMap);
 
@@ -144,15 +144,16 @@ class MDPModelTest {
         double[][] probablisticBellman = this.probablisticMDP.getBellmanMatrix(discountRate,sameActionPolicy);
 
         // assert the reward variable is fixed at 1
-        assertEquals(deterministicBellman[0][0], 1);
-        assertEquals(probablisticBellman[0][0], 1);
+        assertEquals(1,deterministicBellman[0][0]);
+        assertEquals(1,probablisticBellman[0][0]);
         for (int i = 1; i < 4; i++) {
-            assertEquals(deterministicBellman[0][i], 0);
-            assertEquals(probablisticBellman[0][i], 0);
+            assertEquals(0,deterministicBellman[0][i]);
+            assertEquals(0,probablisticBellman[0][i]);
         }
-        assertEquals(deterministicBellman[0][4], 1);
-        assertEquals(probablisticBellman[0][4], 1);
-
+        assertEquals(1,deterministicBellman[0][4]);
+        assertEquals(1,probablisticBellman[0][4]);
+        //System.out.println(Arrays.deepToString(deterministicBellman));
+        //System.out.println(Arrays.deepToString(probablisticBellman));
         for (int row = 1; row < 4; row++) {
             // the reward should equal the action
             assertEquals(deterministicBellman[row][0], row);
@@ -160,16 +161,16 @@ class MDPModelTest {
 
             for (int col = 1; col < 4; col++) {
                 if (row == col) {
-                    assertEquals(deterministicBellman[row][col], discountRate-1);
-                    assertEquals(probablisticBellman[row][col], (0.5*discountRate)-1);
+                    assertEquals(discountRate-1,deterministicBellman[row][col]);
+                    assertEquals((0.5*discountRate)-1, probablisticBellman[row][col]);
                 } else {
                     // with this policy, the chance of going to any state to another state is 0
-                    assertEquals(deterministicBellman[row][col], 0);
-                    assertEquals(probablisticBellman[row][col], 0.25*discountRate);
+                    assertEquals(0,deterministicBellman[row][col]);
+                    assertEquals(0.25*discountRate,probablisticBellman[row][col]);
                 }
                 // the equations here sum to equality
-                assertEquals(deterministicBellman[0][4], 0);
-                assertEquals(probablisticBellman[0][4], 0);
+                assertEquals(0,deterministicBellman[row][4]);
+                assertEquals(0,probablisticBellman[row][4]);
             }
         }
     }

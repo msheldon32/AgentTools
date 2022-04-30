@@ -138,12 +138,14 @@ public class MDPModel extends Model {
 
                 double discountedTransition = discountRate*transitionProb;
 
-                if (it.equals(next_it)) {
+                /*if (it.equals(next_it)) {
                     discountedTransition -= 1;
-                }
+                }*/
                 outMatrix[rowIter][colIter] = discountedTransition;
                 colIter += 1;
             }
+
+            outMatrix[rowIter][rowIter] -= 1;
 
             outMatrix[rowIter][colIter] = 0;
             colIter = 0;
