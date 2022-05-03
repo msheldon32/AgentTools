@@ -6,7 +6,7 @@ import AgentTools.Policies.PolicyType;
 
 import java.util.HashMap;
 
-public class TemporalDifferenceZero  extends RLAlgorithm {
+public class TemporalDifferenceZero extends RLAlgorithm {
     protected HashMap<Object, Double> stateFunction;
     double learningRate;
     double discountRate;
