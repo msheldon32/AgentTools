@@ -44,7 +44,9 @@ class SARSATest {
         state1_Map.put(2, 3.0);
         state1_Map.put(3, 2.0);
         this.withSarsa.qFunction.put(1, state1_Map);
-        this.nRuns = 5000;
+
+        // larger nRuns because of slower convergence with SARSA
+        this.nRuns = 500000;
         this.tolerance = 0.05;
 
         this.threeSpace = new IntegerSpace(1, 4);
@@ -112,15 +114,27 @@ class SARSATest {
         // then the Q function should approximate:
         //     q(1,1) = (0.95*q(2,1))*0.975 - 1 = 12.52
         //     q(2,1) = (0.95*q(1,1))*0.975 + 3 = 14.60
-        for (int i = 0; i < this.nRuns; i++) {
-            this.otherSarsa.reinforce(1, 2, 1, -1);
-            this.otherSarsa.reinforce(2, 1, 1, 3);
+
+        double totalQ1 = 0;
+        double totalQ2 = 0;
+
+        for (int j = 0; j < 32; j++) {
+            for (int i = 0; i < this.nRuns; i++) {
+                this.otherSarsa.reinforce(1, 2, 1, -1);
+                this.otherSarsa.reinforce(2, 1, 1, 3);
+            }
+            totalQ1 += this.otherSarsa.qFunction.get(1).get(1);
+            totalQ2 += this.otherSarsa.qFunction.get(2).get(1);
         }
+
 
         double expQ1 = 12.52;
         double expQ2 = 14.60;
-        double newQ1 = this.otherSarsa.qFunction.get(1).get(1);
-        double newQ2 = this.otherSarsa.qFunction.get(2).get(1);
+        double newQ1 = totalQ1/32.0;
+        double newQ2 = totalQ2/32.0;
+
+        System.out.format("Q1: %f, Q2: %f\n", newQ1, newQ2);
+
         assertTrue(newQ1 > (expQ1 * (1 - this.tolerance)));
         assertTrue(newQ1 < (expQ1 * (1 + this.tolerance)));
         assertTrue(newQ2 > (expQ2 * (1 - this.tolerance)));

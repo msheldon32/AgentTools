@@ -29,7 +29,6 @@ public class SARSA extends RLAlgorithm {
     }
 
     protected void findNextAction(Object state, Policy policy) {
-
         PolicyType policyType = policy.getType(this);
         if (policyType == PolicyType.Optimal) {
             if (!this.qFunction.containsKey(state)) {
@@ -75,7 +74,9 @@ public class SARSA extends RLAlgorithm {
 
     @Override
     public void reinforce(Object startState, Object endState, Object action, double reward) {
-        this.findNextAction(endState, policy);
+        this.findNextAction(endState, this.policy);
+
+        //System.out.format("Next action: %d\n", (int)this.nextAction);
 
         double action_q = 0;
         if (this.qFunction.containsKey(endState) && this.qFunction.get(endState).containsKey(this.nextAction)) {
@@ -88,7 +89,8 @@ public class SARSA extends RLAlgorithm {
             old_q = this.qFunction.get(startState).get(action);
         }
 
-        double new_q = (1-this.learningRate) * old_q + (this.learningRate * (reward + (this.discountRate * action_q)));
+        double new_q = old_q + (this.learningRate * (reward + (this.discountRate * action_q) - old_q));
+
         if (!this.qFunction.containsKey(startState)) {
             this.qFunction.put(startState, new HashMap<Object,Double>());
         }

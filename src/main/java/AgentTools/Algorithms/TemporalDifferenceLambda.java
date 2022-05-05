@@ -50,8 +50,6 @@ public class TemporalDifferenceLambda extends RLAlgorithm {
 
     @Override
     public void reinforce(Object startState, Object endState, Object action, double reward) {
-        Object idealAction = this.getAction(endState);
-
         double end_v = 0;
         if (this.stateFunction.containsKey(endState)) {
             end_v = this.stateFunction.get(endState);
@@ -65,11 +63,17 @@ public class TemporalDifferenceLambda extends RLAlgorithm {
 
         double delta = reward + (this.discountRate*end_v) - start_v;
 
+        double curE = 0;
+
+        if (this.eFunction.containsKey(startState)) {
+            curE = this.eFunction.get(startState);
+        }
+
         switch (this.traceMethod) {
             case Accumulating:
-                this.eFunction.put(startState, this.eFunction.get(startState)+1);
+                this.eFunction.put(startState, curE+1);
             case Dutch:
-                this.eFunction.put(startState, (1-this.learningRate)*this.eFunction.get(startState)+1);
+                this.eFunction.put(startState, (1-this.learningRate)*curE+1);
             case Replacing:
                 this.eFunction.put(startState, 1.0);
         }
@@ -77,7 +81,11 @@ public class TemporalDifferenceLambda extends RLAlgorithm {
         for (Object s: this.stateFunction.keySet()) {
             double prev_v = this.stateFunction.get(s);
             this.stateFunction.put(s, prev_v + this.eFunction.get(s)*delta*this.learningRate);
-            this.eFunction.put(s, this.lambda*this.discountRate*this.eFunction.get(s));
+            double sE = 0;
+            if (this.eFunction.containsKey(s)) {
+                sE = this.eFunction.get(s);
+            }
+            this.eFunction.put(s, this.lambda*this.discountRate*sE);
         }
     }
 }
