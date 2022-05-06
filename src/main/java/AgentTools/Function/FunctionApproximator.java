@@ -1,10 +1,12 @@
-package AgentTools.FunctionApproximation;
+package AgentTools.Function;
 
 import java.util.List;
 
 public class FunctionApproximator {
-    public FunctionApproximator() {
+    protected List<Object> params;
 
+    public FunctionApproximator(List<Object> params) {
+        this.params = params;
     }
 
     public double getQ(Object state, Object value) {
@@ -15,7 +17,11 @@ public class FunctionApproximator {
         return 0.0;
     }
 
-    public void fitResult(Object state, double reward) {
+    public void fitResultV(Object state, double v) {
+
+    }
+
+    public void fitResultQ(Object state, Object action, double v) {
 
     }
 
