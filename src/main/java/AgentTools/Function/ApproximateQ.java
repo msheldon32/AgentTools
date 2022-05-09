@@ -16,4 +16,8 @@ public class ApproximateQ implements QFunction {
     public void updateValue(Object state, Object action, double newVal) {
         this.approximator.fitResultQ(state, action, newVal);
     }
+
+    public Object getMaxAction(Object state) {
+        return this.approximator.getMaxAction(state);
+    }
 }

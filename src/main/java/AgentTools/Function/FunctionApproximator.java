@@ -32,4 +32,8 @@ public class FunctionApproximator {
     public void fitResults(Object[] states, double[] rewards) {
 
     }
+
+    public Object getMaxAction(Object state) {
+        return null;
+    }
 }

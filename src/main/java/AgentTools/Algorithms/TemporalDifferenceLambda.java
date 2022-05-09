@@ -1,34 +1,41 @@
 package AgentTools.Algorithms;
 
+import AgentTools.Function.TabularV;
+import AgentTools.Function.VFunction;
 import AgentTools.Policies.GreedyPolicy;
 import AgentTools.Policies.Policy;
 import AgentTools.Policies.PolicyType;
+import AgentTools.Util.ValueSpace;
 
 import java.util.HashMap;
 
 public class TemporalDifferenceLambda extends RLAlgorithm {
-    protected HashMap<Object, Double> stateFunction;
     protected HashMap<Object, Double> eFunction;
-    protected double learningRate;
-    protected double discountRate;
-    protected double lambda;
+
+    protected VFunction vFunction;
+
     protected Policy greedyPolicy;
     protected TraceMethod traceMethod;
 
-    public TemporalDifferenceLambda(double lambda, double discountRate, double learningRate, TraceMethod traceMethod) {
-        super();
-        this.stateFunction = new HashMap<Object, Double>();
+    public TemporalDifferenceLambda(AlgoConfiguration algoConfiguration, VFunction vFunction, TraceMethod traceMethod) {
+        super(algoConfiguration);
+        this.vFunction = vFunction;
         this.eFunction = new HashMap<Object, Double>();
 
-        this.learningRate = learningRate;
-        this.discountRate = discountRate;
-        this.lambda = lambda;
         this.greedyPolicy = new GreedyPolicy();
         this.traceMethod = traceMethod;
     }
 
-    public TemporalDifferenceLambda() {
-        this(0.05, 0.05, 0.05, TraceMethod.Replacing);
+    public TemporalDifferenceLambda(AlgoConfiguration algoConfiguration, TraceMethod traceMethod) {
+        this(algoConfiguration, new TabularV(), traceMethod);
+    }
+
+    public TemporalDifferenceLambda(AlgoConfiguration algoConfiguration, VFunction vFunction) {
+        this(algoConfiguration, vFunction, TraceMethod.Replacing);
+    }
+
+    public TemporalDifferenceLambda(AlgoConfiguration algoConfiguration) {
+        this(algoConfiguration, new TabularV(), TraceMethod.Replacing);
     }
 
     @Override
@@ -38,7 +45,7 @@ public class TemporalDifferenceLambda extends RLAlgorithm {
         if (policyType == PolicyType.Optimal) {
             throw new RuntimeException("Invalid Policy for Algorithm");
         } else if (policyType == PolicyType.Random) {
-            return this.actionSpace.getRealization(policy.getRandom());
+            return this.algoConfiguration.actionSpace.getRealization(policy.getRandom());
         } else if (policyType == PolicyType.FixedStateAction) {
             return policy.getAction(state);
         } else if (policyType == PolicyType.Probablistic) {
@@ -50,18 +57,11 @@ public class TemporalDifferenceLambda extends RLAlgorithm {
 
     @Override
     public void reinforce(Object startState, Object endState, Object action, double reward) {
-        double end_v = 0;
-        if (this.stateFunction.containsKey(endState)) {
-            end_v = this.stateFunction.get(endState);
-        }
+        double end_v = this.vFunction.getValue(endState);
 
-        double start_v = 0;
+        double start_v = this.vFunction.getValue(startState);
 
-        if (this.stateFunction.containsKey(startState)) {
-            start_v = this.stateFunction.get(startState);
-        }
-
-        double delta = reward + (this.discountRate*end_v) - start_v;
+        double delta = reward + (this.algoConfiguration.discountRate*end_v) - start_v;
 
         double curE = 0;
 
@@ -73,23 +73,26 @@ public class TemporalDifferenceLambda extends RLAlgorithm {
             case Accumulating:
                 this.eFunction.put(startState, curE+1);
             case Dutch:
-                this.eFunction.put(startState, (1-this.learningRate)*curE+1);
+                this.eFunction.put(startState, (1-this.algoConfiguration.learningRate)*curE+1);
             case Replacing:
                 this.eFunction.put(startState, 1.0);
         }
 
-        for (Object s: this.stateFunction.keySet()) {
+        for (Object s: this.eFunction.keySet()) {
+            double prev_v = this.vFunction.getValue(s);
 
-            double prev_v = 0;
-            if (this.stateFunction.containsKey(s)) {
-                prev_v = this.stateFunction.get(s);
-            }
-            double sE = 0;
+            double start_e = 0;
             if (this.eFunction.containsKey(s)) {
-                sE = this.eFunction.get(s);
+                start_e = this.eFunction.get(s);
             }
-            this.stateFunction.put(s, prev_v + sE*delta*this.learningRate);
-            this.eFunction.put(s, this.lambda*this.discountRate*sE);
+
+            double end_e = this.algoConfiguration.learningRate*this.algoConfiguration.discountRate*start_e;
+
+            double new_v = prev_v + start_e*delta*this.algoConfiguration.learningRate;
+
+            this.vFunction.updateValue(s, new_v);
+
+            this.eFunction.put(s, end_e);
         }
     }
 }

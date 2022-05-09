@@ -21,6 +21,7 @@ public class PolicyIteration extends RLAlgorithm  {
     protected double discountRate;
 
     public PolicyIteration(MDPModel model, double discountRate, int nSteps, Random random) {
+        super(model.getStateSpace(), model.getActionSpace());
         this.model = model;
         this.policy = new StateActionPolicy();
 

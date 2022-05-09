@@ -1,58 +1,40 @@
 package AgentTools.Algorithms;
 
+import AgentTools.Function.QFunction;
+import AgentTools.Function.TabularQ;
 import AgentTools.Policies.Policy;
 import AgentTools.Policies.PolicyType;
+import AgentTools.Util.ValueSpace;
+import com.sun.jdi.Value;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class SARSA extends RLAlgorithm {
-    protected HashMap<Object, HashMap<Object, Double>> qFunction;
-    double learningRate;
-    double discountRate;
+    protected QFunction qFunction;
+
     Object nextAction;
     Policy policy;
 
-    public SARSA(Policy policy, double discountRate, double learningRate) {
-        super();
-        this.qFunction = new HashMap<Object, HashMap<Object, Double>>();
+    public SARSA(AlgoConfiguration algoConfiguration, Policy policy, QFunction qFunction) {
+        super(algoConfiguration);
+        this.qFunction = qFunction;
 
-        this.learningRate = learningRate;
-        this.discountRate = discountRate;
         this.nextAction = null;
         this.policy = policy;
     }
 
-    public SARSA(Policy policy) {
-        this(policy, 0.05, 0.05);
+    public SARSA(AlgoConfiguration algoConfiguration, Policy policy) {
+        this(algoConfiguration, policy, new TabularQ(algoConfiguration.actionSpace, algoConfiguration.random));
     }
 
     protected void findNextAction(Object state, Policy policy) {
         PolicyType policyType = policy.getType(this);
         if (policyType == PolicyType.Optimal) {
-            if (!this.qFunction.containsKey(state)) {
-                this.nextAction = this.actionSpace.getRealization(policy.getRandom());
-                return;
-            }
-            HashMap<Object, Double> actionQ = this.qFunction.get(state);
-            List<Object> bestActions = new ArrayList<Object>();
-
-            double maxScore = Double.NEGATIVE_INFINITY;
-            for (Object action : actionQ.keySet()) {
-                double actionScore = actionQ.get(action);
-                if (actionScore > maxScore) {
-                    bestActions.clear();
-                    bestActions.add(action);
-                    maxScore = actionScore;
-                } else if (actionScore == maxScore) {
-                    bestActions.add(action);
-                }
-            }
-
-            this.nextAction =  bestActions.get(policy.getRandom().nextInt(bestActions.size()));
+            this.nextAction = this.qFunction.getMaxAction(state);
         } else if (policyType == PolicyType.Random) {
-            this.nextAction = this.actionSpace.getRealization(policy.getRandom());
+            this.nextAction = this.algoConfiguration.actionSpace.getRealization(policy.getRandom());
         } else if (policyType == PolicyType.FixedStateAction) {
             this.nextAction = policy.getAction(state);
         } else if (policyType == PolicyType.Probablistic) {
@@ -76,24 +58,14 @@ public class SARSA extends RLAlgorithm {
     public void reinforce(Object startState, Object endState, Object action, double reward) {
         this.findNextAction(endState, this.policy);
 
-        //System.out.format("Next action: %d\n", (int)this.nextAction);
+        double action_q = this.qFunction.getValue(startState, this.nextAction);
 
-        double action_q = 0;
-        if (this.qFunction.containsKey(endState) && this.qFunction.get(endState).containsKey(this.nextAction)) {
-            action_q = this.qFunction.get(endState).get(this.nextAction);
-        }
+        double old_q = this.qFunction.getValue(startState, action);
 
-        double old_q = 0;
+        double temp_difference = this.algoConfiguration.learningRate * (reward + (this.algoConfiguration.discountRate * action_q) - old_q);
 
-        if (this.qFunction.containsKey(startState) && this.qFunction.get(startState).containsKey(action)) {
-            old_q = this.qFunction.get(startState).get(action);
-        }
+        double new_q = old_q + temp_difference;
 
-        double new_q = old_q + (this.learningRate * (reward + (this.discountRate * action_q) - old_q));
-
-        if (!this.qFunction.containsKey(startState)) {
-            this.qFunction.put(startState, new HashMap<Object,Double>());
-        }
-        this.qFunction.get(startState).put(action, new_q);
+        this.qFunction.updateValue(startState, action, new_q);
     }
 }

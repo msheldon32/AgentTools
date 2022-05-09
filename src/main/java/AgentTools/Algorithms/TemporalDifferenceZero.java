@@ -1,28 +1,28 @@
 package AgentTools.Algorithms;
 
+import AgentTools.Function.TabularV;
+import AgentTools.Function.VFunction;
 import AgentTools.Policies.GreedyPolicy;
 import AgentTools.Policies.Policy;
 import AgentTools.Policies.PolicyType;
+import AgentTools.Util.ValueSpace;
 
 import java.util.HashMap;
 
 public class TemporalDifferenceZero extends RLAlgorithm {
-    protected HashMap<Object, Double> stateFunction;
-    double learningRate;
-    double discountRate;
+    protected VFunction vFunction;
+
     Policy greedyPolicy;
 
-    public TemporalDifferenceZero(double discountRate, double learningRate) {
-        super();
-        this.stateFunction = new HashMap<Object, Double>();
+    public TemporalDifferenceZero(AlgoConfiguration algoConfiguration, VFunction vFunction) {
+        super(algoConfiguration);
+        this.vFunction = vFunction;
 
-        this.learningRate = learningRate;
-        this.discountRate = discountRate;
         this.greedyPolicy = new GreedyPolicy();
     }
 
-    public TemporalDifferenceZero() {
-        this(0.05, 0.05);
+    public TemporalDifferenceZero(AlgoConfiguration algoConfiguration) {
+        this(algoConfiguration, new TabularV());
     }
 
     @Override
@@ -31,7 +31,7 @@ public class TemporalDifferenceZero extends RLAlgorithm {
         if (policyType == PolicyType.Optimal) {
             throw new RuntimeException("Invalid Policy for Algorithm");
         } else if (policyType == PolicyType.Random) {
-            return this.actionSpace.getRealization(policy.getRandom());
+            return this.algoConfiguration.actionSpace.getRealization(policy.getRandom());
         } else if (policyType == PolicyType.FixedStateAction) {
             return policy.getAction(state);
         } else if (policyType == PolicyType.Probablistic) {
@@ -43,18 +43,13 @@ public class TemporalDifferenceZero extends RLAlgorithm {
 
     @Override
     public void reinforce(Object startState, Object endState, Object action, double reward) {
-        double end_v = 0;
-        if (this.stateFunction.containsKey(endState)) {
-            end_v = this.stateFunction.get(endState);
-        }
+        double end_v = this.vFunction.getValue(endState);
 
-        double old_v = 0;
+        double old_v = this.vFunction.getValue(startState);
 
-        if (this.stateFunction.containsKey(startState)) {
-            old_v = this.stateFunction.get(startState);
-        }
+        double temporalDifference = this.algoConfiguration.learningRate * (reward + (this.algoConfiguration.discountRate * end_v) - old_v);
 
-        double new_v = old_v + (this.learningRate * (reward + (this.discountRate * end_v) - old_v));
-        this.stateFunction.put(startState, new_v);
+        double new_v = old_v + temporalDifference;
+        this.vFunction.updateValue(startState, new_v);
     }
 }

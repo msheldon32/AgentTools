@@ -5,14 +5,12 @@ import AgentTools.Policies.Policy;
 import AgentTools.Util.ValueSpace;
 
 public class RLAlgorithm {
-    protected ValueSpace actionSpace;
-    protected ValueSpace stateSpace;
+    protected AlgoConfiguration algoConfiguration;
     protected Policy policy;
     protected Object state;
 
-    public RLAlgorithm() {
-        this.actionSpace = null;
-        this.stateSpace  = null;
+    public RLAlgorithm(AlgoConfiguration algoConfiguration) {
+        this.algoConfiguration = algoConfiguration;
         this.policy = null;
         this.state = null;
     }
@@ -21,21 +19,8 @@ public class RLAlgorithm {
 
     }
 
-    public void setEnvironment(Environment environment) {
-        this.actionSpace = environment.getActionSpace();
-        this.stateSpace = environment.getStateSpace();
-    }
-
     public void setPolicy(Policy policy) {
         this.policy = policy;
-    }
-
-    void setActionSpace(ValueSpace actionSpace) {
-        this.actionSpace = actionSpace;
-    }
-
-    void setStateSpace(ValueSpace stateSpace) {
-        this.stateSpace = stateSpace;
     }
 
     public Object getAction(Object state, Policy policy) {
