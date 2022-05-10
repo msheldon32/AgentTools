@@ -25,7 +25,8 @@ class SARSATest {
     private IntegerSpace twoSpace;
     private IntegerSpace threeSpace;
 
-    private AlgoConfiguration algoConfiguration;
+    private AlgoConfiguration algoConfiguration1;
+    private AlgoConfiguration algoConfiguration2;
 
     @org.junit.jupiter.api.BeforeEach
     void setUp() {
@@ -35,25 +36,33 @@ class SARSATest {
         this.threeSpace = new IntegerSpace(1,4);
         this.twoSpace   = new IntegerSpace(1,3);
 
-        this.algoConfiguration = new AlgoConfiguration();
 
-        this.algoConfiguration.discountRate = 0.95;
-        this.algoConfiguration.learningRate = 0.05;
-        this.algoConfiguration.actionSpace = threeSpace;
-        this.algoConfiguration.random = new Random();
+        this.algoConfiguration1= new AlgoConfiguration();
+        this.algoConfiguration1.discountRate = 0.95;
+        this.algoConfiguration1.learningRate = 0.05;
+        this.algoConfiguration1.actionSpace = twoSpace;
+        this.algoConfiguration1.random = new Random();
 
-        TabularQ firstQ = new TabularQ(algoConfiguration.actionSpace, algoConfiguration.random);
+        this.algoConfiguration2 = new AlgoConfiguration();
+        this.algoConfiguration2.discountRate = 0.95;
+        this.algoConfiguration2.learningRate = 0.05;
+        this.algoConfiguration2.actionSpace = threeSpace;
+        this.algoConfiguration2.random = new Random();
+
+        TabularQ firstQ = new TabularQ(algoConfiguration1.actionSpace, algoConfiguration1.random);
         firstQ.updateValue(1,1,1.0);
         firstQ.updateValue(2,1,3.0);
-        this.otherSarsa = new SARSA(this.algoConfiguration, this.epsGreedyPolicy, firstQ);
+
+        this.otherSarsa = new SARSA(this.algoConfiguration1, this.epsGreedyPolicy, firstQ);
 
 
-        TabularQ secondQ = new TabularQ(algoConfiguration.actionSpace, algoConfiguration.random);
+        TabularQ secondQ = new TabularQ(algoConfiguration2.actionSpace, algoConfiguration2.random);
         secondQ.updateValue(1,1,1.0);
         secondQ.updateValue(1,2,3.0);
         secondQ.updateValue(1,3,2.0);
 
-        this.withSarsa = new SARSA(algoConfiguration, this.epsGreedyPolicy, secondQ);
+
+        this.withSarsa = new SARSA(this.algoConfiguration2, this.epsGreedyPolicy, secondQ);
 
         // larger nRuns because of slower convergence with SARSA
         this.nRuns = 500000;

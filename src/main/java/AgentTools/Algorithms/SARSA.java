@@ -61,9 +61,10 @@ public class SARSA extends RLAlgorithm {
         double action_q = this.qFunction.getValue(endState, this.nextAction);
 
         double old_q = this.qFunction.getValue(startState, action);
-        double temp_difference = this.algoConfiguration.learningRate * (reward + (this.algoConfiguration.discountRate * action_q) - old_q);
 
-        double new_q = old_q + temp_difference;
+        double temp_difference = reward + (this.algoConfiguration.discountRate * action_q) - old_q;
+
+        double new_q = old_q + algoConfiguration.learningRate*temp_difference;
 
         this.qFunction.updateValue(startState, action, new_q);
     }
