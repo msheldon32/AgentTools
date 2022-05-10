@@ -14,33 +14,27 @@ import org.apache.commons.math3.linear.*;
 public class PolicyIteration extends RLAlgorithm  {
     protected MDPModel model;
     protected StateActionPolicy policy;
-    protected ValueSpace stateSpace;
-    protected ValueSpace actionSpace;
-    protected Random random;
+
+
     protected HashMap<Object, Double> vFunction;
     protected double discountRate;
 
-    public PolicyIteration(MDPModel model, double discountRate, int nSteps, Random random) {
-        super(model.getStateSpace(), model.getActionSpace());
+    public PolicyIteration(MDPModel model, AlgoConfiguration algoConfiguration) {
+        super(algoConfiguration);
         this.model = model;
         this.policy = new StateActionPolicy();
 
-        this.stateSpace = model.getStateSpace();
-        this.actionSpace = model.getActionSpace();
-        this.random = random;
-        this.discountRate = discountRate;
         this.randomizePolicy();
-    }
 
-    protected PolicyIteration(MDPModel model, double discountRate, int nSteps) {
-        this(model, discountRate, nSteps, new Random());
+        assert algoConfiguration.actionSpace == model.getActionSpace();
+        assert algoConfiguration.stateSpace == model.getStateSpace();
     }
 
     private void randomizePolicy() {
-        for (Iterator it = this.stateSpace.iterator(); it.hasNext(); ) {
+        for (Iterator it = this.algoConfiguration.stateSpace.iterator(); it.hasNext(); ) {
             Object state = it.next();
 
-            this.policy.setStateAction(state, this.actionSpace.getRealization(this.random));
+            this.policy.setStateAction(state, this.algoConfiguration.actionSpace.getRealization(this.algoConfiguration.random));
         }
     }
 

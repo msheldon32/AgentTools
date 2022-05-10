@@ -1,5 +1,7 @@
 package AgentTools.Algorithms;
 
+import AgentTools.Function.TabularV;
+import AgentTools.Function.VFunction;
 import AgentTools.Policies.Policy;
 import AgentTools.Policies.StateActionPolicy;
 import AgentTools.Util.IntegerSpace;
@@ -15,9 +17,9 @@ class TemporalDifferenceZeroTest {
     private TemporalDifferenceZero tdZero;
     private Policy sameActionPolicy;
 
-    private HashMap<Object, Double> initialVFunction;
+    private VFunction initialVFunction;
 
-    private IntegerSpace threeSpace;
+    private AlgoConfiguration algoConfiguration;
 
     private int nRuns;
     private double tolerance;
@@ -26,19 +28,21 @@ class TemporalDifferenceZeroTest {
 
     @BeforeEach
     void setUp() {
-        this.tdZero = new TemporalDifferenceZero(0.95, 0.05);
-
         HashMap<Object, Object> sameActionMap = new HashMap<Object, Object>();
         sameActionMap.put(1,1);
         sameActionMap.put(2,2);
         sameActionMap.put(3,3);
 
-        this.initialVFunction = new HashMap<Object, Double>();
-        this.initialVFunction.put(1,1.0);
-        this.initialVFunction.put(2,4.0);
-        this.initialVFunction.put(3,9.0);
+        this.initialVFunction = new TabularV();
+        this.initialVFunction.updateValue(1,1.0);
+        this.initialVFunction.updateValue(2,4.0);
+        this.initialVFunction.updateValue(3,9.0);
 
-        this.tdZero.stateFunction = this.initialVFunction;
+        this.algoConfiguration = new AlgoConfiguration();
+        this.algoConfiguration.lambda = 0.5;
+        this.algoConfiguration.discountRate = 0.95;
+        this.algoConfiguration.learningRate = 0.05;
+        this.tdZero = new TemporalDifferenceZero(this.algoConfiguration, this.initialVFunction);
 
         this.sameActionPolicy = new StateActionPolicy(sameActionMap);
         this.tdZero.setPolicy(this.sameActionPolicy);
@@ -95,9 +99,9 @@ class TemporalDifferenceZeroTest {
         double expv1 = 88.52;
         double expv2 = 92.45;
         double expv3 = 99.02;
-        double newv1 = this.tdZero.stateFunction.get(1);
-        double newv2 = this.tdZero.stateFunction.get(2);
-        double newv3 = this.tdZero.stateFunction.get(3);
+        double newv1 = this.tdZero.vFunction.getValue(1);
+        double newv2 = this.tdZero.vFunction.getValue(2);
+        double newv3 = this.tdZero.vFunction.getValue(3);
 
         //System.out.format("v1: %f, v2: %f, v3: %f\n", newv1, newv2, newv3);
 

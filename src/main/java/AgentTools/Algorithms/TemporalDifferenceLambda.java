@@ -86,11 +86,11 @@ public class TemporalDifferenceLambda extends RLAlgorithm {
                 start_e = this.eFunction.get(s);
             }
 
-            double end_e = this.algoConfiguration.learningRate*this.algoConfiguration.discountRate*start_e;
-
             double new_v = prev_v + start_e*delta*this.algoConfiguration.learningRate;
 
             this.vFunction.updateValue(s, new_v);
+
+            double end_e = this.algoConfiguration.lambda*this.algoConfiguration.discountRate*start_e;
 
             this.eFunction.put(s, end_e);
         }

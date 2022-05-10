@@ -1,5 +1,6 @@
 package AgentTools.Algorithms;
 
+import AgentTools.Function.TabularV;
 import AgentTools.Policies.Policy;
 import AgentTools.Policies.StateActionPolicy;
 import AgentTools.Util.IntegerSpace;
@@ -15,30 +16,34 @@ class TemporalDifferenceLambdaTest {
     private TemporalDifferenceLambda tdLambda;
     private Policy sameActionPolicy;
 
-    private HashMap<Object, Double> initialVFunction;
-
-    private IntegerSpace threeSpace;
+    private TabularV initialVFunction;
 
     private int nRuns;
     private double tolerance;
 
     private Random random;
 
+    private AlgoConfiguration algoConfiguration;
+
     @BeforeEach
     void setUp() {
-        this.tdLambda = new TemporalDifferenceLambda(0.5, 0.95, 0.05, TraceMethod.Replacing);
+        this.algoConfiguration = new AlgoConfiguration();
+        this.algoConfiguration.lambda = 0.5;
+        this.algoConfiguration.discountRate = 0.95;
+        this.algoConfiguration.learningRate = 0.05;
+        this.tdLambda = new TemporalDifferenceLambda(algoConfiguration, TraceMethod.Replacing);
 
         HashMap<Object, Object> sameActionMap = new HashMap<Object, Object>();
         sameActionMap.put(1,1);
         sameActionMap.put(2,2);
         sameActionMap.put(3,3);
 
-        this.initialVFunction = new HashMap<Object, Double>();
-        this.initialVFunction.put(1,1.0);
-        this.initialVFunction.put(2,4.0);
-        this.initialVFunction.put(3,9.0);
+        this.initialVFunction = new TabularV();
+        this.initialVFunction.updateValue(1,1.0);
+        this.initialVFunction.updateValue(2,4.0);
+        this.initialVFunction.updateValue(3,9.0);
 
-        this.tdLambda.stateFunction = this.initialVFunction;
+        this.tdLambda.vFunction = this.initialVFunction;
 
         this.sameActionPolicy = new StateActionPolicy(sameActionMap);
         this.tdLambda.setPolicy(this.sameActionPolicy);
@@ -95,9 +100,9 @@ class TemporalDifferenceLambdaTest {
         double expv1 = 88.52;
         double expv2 = 92.45;
         double expv3 = 99.02;
-        double newv1 = this.tdLambda.stateFunction.get(1);
-        double newv2 = this.tdLambda.stateFunction.get(2);
-        double newv3 = this.tdLambda.stateFunction.get(3);
+        double newv1 = this.tdLambda.vFunction.getValue(1);
+        double newv2 = this.tdLambda.vFunction.getValue(2);
+        double newv3 = this.tdLambda.vFunction.getValue(3);
 
         //System.out.format("v1: %f, v2: %f, v3: %f\n", newv1, newv2, newv3);
 

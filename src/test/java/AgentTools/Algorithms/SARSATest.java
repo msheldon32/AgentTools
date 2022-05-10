@@ -131,8 +131,6 @@ class SARSATest {
             }
             totalQ1 += this.otherSarsa.qFunction.getValue(1,1);
             totalQ2 += this.otherSarsa.qFunction.getValue(2,1);
-            //totalQ1 += this.otherSarsa.qFunction.get(1).get(1);
-            //totalQ2 += this.otherSarsa.qFunction.get(2).get(1);
         }
 
 
@@ -141,7 +139,7 @@ class SARSATest {
         double newQ1 = totalQ1/32.0;
         double newQ2 = totalQ2/32.0;
 
-        //System.out.format("Q1: %f, Q2: %f\n", newQ1, newQ2);
+        System.out.format("Q1: %f, Q2: %f\n", newQ1, newQ2);
 
         assertTrue(newQ1 > (expQ1 * (1 - this.tolerance)));
         assertTrue(newQ1 < (expQ1 * (1 + this.tolerance)));

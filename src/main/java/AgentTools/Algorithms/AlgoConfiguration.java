@@ -8,7 +8,7 @@ import java.util.Random;
 public class AlgoConfiguration {
     public double discountRate;
     public double learningRate;
-    public double gamma;
+    public double lambda;
     public ValueSpace stateSpace;
     public ValueSpace actionSpace;
 

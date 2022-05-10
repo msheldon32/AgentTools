@@ -51,14 +51,12 @@ public class QLearning extends RLAlgorithm {
 
     @Override
     public void reinforce(Object startState, Object endState, Object action, double reward) {
-        Object idealAction = this.getAction(endState, this.greedyPolicy);
-
         double action_q = this.qFunction.getValue(endState, this.qFunction.getMaxAction(endState));
         double old_q = this.qFunction.getValue(startState, action);
 
-        double temp_diff = (reward + (this.algoConfiguration.discountRate*action_q))-old_q;
+        double temp_diff = reward + (this.algoConfiguration.discountRate*action_q)-old_q;
 
         double new_q = old_q + (this.algoConfiguration.learningRate*temp_diff);
-        this.qFunction.updateValue(startState, endState, new_q);
+        this.qFunction.updateValue(startState, action, new_q);
     }
 }

@@ -31,4 +31,8 @@ public class RLAlgorithm {
         return this.getAction(state, this.policy);
     }
 
+    public void setEnvironment(Environment environment) {
+
+    }
+
 }
