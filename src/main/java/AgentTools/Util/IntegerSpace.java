@@ -28,4 +28,12 @@ public class IntegerSpace extends ValueSpace<Integer> {
     public int getSize() {
         return upperBound-min;
     }
+
+    public int getMin() {
+        return this.min;
+    }
+
+    public int getMax() {
+        return this.upperBound-1;
+    }
 }

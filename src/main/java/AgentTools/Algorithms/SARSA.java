@@ -32,7 +32,7 @@ public class SARSA extends RLAlgorithm {
     protected void findNextAction(Object state, Policy policy) {
         PolicyType policyType = policy.getType(this);
         if (policyType == PolicyType.Optimal) {
-            this.nextAction = this.qFunction.getMaxAction(state);
+            this.nextAction = this.qFunction.getMaxAction(state, this.algoConfiguration.actionSpace);
         } else if (policyType == PolicyType.Random) {
             this.nextAction = this.algoConfiguration.actionSpace.getRealization(policy.getRandom());
         } else if (policyType == PolicyType.FixedStateAction) {

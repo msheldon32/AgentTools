@@ -35,7 +35,7 @@ public class TabularQ implements QFunction {
         this.qMap.get(state).put(action, newVal);
     }
 
-    public Object getMaxAction(Object state) {
+    public Object getMaxAction(Object state, ValueSpace actionSpace) {
         if (!this.qMap.containsKey(state)) {
             return this.actionSpace.getRealization(this.random);
         }
@@ -55,5 +55,9 @@ public class TabularQ implements QFunction {
         }
 
         return bestActions.get(this.random.nextInt(bestActions.size()));
+    }
+
+    public Object getMaxAction(Object state) {
+        return getMaxAction(state, this.actionSpace);
     }
 }

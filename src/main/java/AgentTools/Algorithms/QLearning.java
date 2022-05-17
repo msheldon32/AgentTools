@@ -37,7 +37,7 @@ public class QLearning extends RLAlgorithm {
         PolicyType policyType = policy.getType(this);
 
         if (policyType == PolicyType.Optimal) {
-            return this.qFunction.getMaxAction(state);
+            return this.qFunction.getMaxAction(state, this.algoConfiguration.actionSpace);
         } else if (policyType == PolicyType.Random) {
             return this.algoConfiguration.actionSpace.getRealization(policy.getRandom());
         } else if (policyType == PolicyType.FixedStateAction) {
@@ -51,7 +51,7 @@ public class QLearning extends RLAlgorithm {
 
     @Override
     public void reinforce(Object startState, Object endState, Object action, double reward) {
-        double action_q = this.qFunction.getValue(endState, this.qFunction.getMaxAction(endState));
+        double action_q = this.qFunction.getValue(endState, this.qFunction.getMaxAction(endState, this.algoConfiguration.actionSpace));
         double old_q = this.qFunction.getValue(startState, action);
 
         double temp_diff = reward + (this.algoConfiguration.discountRate*action_q)-old_q;

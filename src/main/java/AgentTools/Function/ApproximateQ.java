@@ -1,5 +1,7 @@
 package AgentTools.Function;
 
+import AgentTools.Util.ValueSpace;
+
 import java.util.HashMap;
 
 public class ApproximateQ implements QFunction {
@@ -17,7 +19,7 @@ public class ApproximateQ implements QFunction {
         this.approximator.fitResultQ(state, action, newVal);
     }
 
-    public Object getMaxAction(Object state) {
-        return this.approximator.getMaxAction(state);
+    public Object getMaxAction(Object state, ValueSpace actionSpace) {
+        return this.approximator.getMaxAction(state, actionSpace);
     }
 }

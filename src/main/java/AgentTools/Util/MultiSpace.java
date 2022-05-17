@@ -126,4 +126,9 @@ public class MultiSpace extends ValueSpace<List> {
 
         return totalSize;
     }
+
+
+    public List<ValueSpace> getSpaces() {
+        return this.spaces;
+    }
 }
