@@ -1,11 +1,12 @@
 package AgentTools.Algorithms;
 
+import AgentTools.Algorithms.Configuration.AlgoConfiguration;
+import AgentTools.Algorithms.Configuration.TraceMethod;
 import AgentTools.Function.TabularV;
 import AgentTools.Function.VFunction;
 import AgentTools.Policies.GreedyPolicy;
 import AgentTools.Policies.Policy;
 import AgentTools.Policies.PolicyType;
-import AgentTools.Util.ValueSpace;
 
 import java.util.HashMap;
 

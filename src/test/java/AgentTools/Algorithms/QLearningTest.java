@@ -1,5 +1,6 @@
 package AgentTools.Algorithms;
 
+import AgentTools.Algorithms.Configuration.AlgoConfiguration;
 import AgentTools.Function.TabularQ;
 import AgentTools.Policies.EpsilonGreedyPolicy;
 import AgentTools.Policies.GreedyPolicy;
@@ -7,7 +8,6 @@ import AgentTools.Policies.Policy;
 import AgentTools.Util.IntegerSpace;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;

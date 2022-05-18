@@ -1,9 +1,10 @@
 package AgentTools.Algorithms;
 
+import AgentTools.Algorithms.Configuration.AlgoConfiguration;
+import AgentTools.Algorithms.Configuration.TraceMethod;
 import AgentTools.Function.TabularV;
 import AgentTools.Policies.Policy;
 import AgentTools.Policies.StateActionPolicy;
-import AgentTools.Util.IntegerSpace;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

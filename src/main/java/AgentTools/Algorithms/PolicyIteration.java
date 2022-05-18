@@ -1,13 +1,11 @@
 package AgentTools.Algorithms;
 
+import AgentTools.Algorithms.Configuration.AlgoConfiguration;
 import AgentTools.Models.MDPModel;
-import AgentTools.Policies.Policy;
 import AgentTools.Policies.StateActionPolicy;
-import AgentTools.Util.ValueSpace;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Random;
 
 import org.apache.commons.math3.linear.*;
 

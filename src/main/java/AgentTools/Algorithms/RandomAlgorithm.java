@@ -1,10 +1,7 @@
 package AgentTools.Algorithms;
 
+import AgentTools.Algorithms.Configuration.AlgoConfiguration;
 import AgentTools.Policies.Policy;
-import AgentTools.Algorithms.RLAlgorithm;
-import AgentTools.Util.ValueSpace;
-
-import java.util.Random;
 
 public class RandomAlgorithm extends RLAlgorithm {
 

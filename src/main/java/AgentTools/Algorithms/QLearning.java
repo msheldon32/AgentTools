@@ -1,16 +1,12 @@
 package AgentTools.Algorithms;
 
+import AgentTools.Algorithms.Configuration.AlgoConfiguration;
 import AgentTools.Function.QFunction;
 import AgentTools.Function.TabularQ;
 import AgentTools.Policies.GreedyPolicy;
 import AgentTools.Policies.Policy;
 import AgentTools.Policies.PolicyType;
-import AgentTools.Algorithms.RLAlgorithm;
-import AgentTools.Util.ValueSpace;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 
 public class QLearning extends RLAlgorithm {

@@ -1,4 +1,4 @@
-package AgentTools.Algorithms;
+package AgentTools.Algorithms.Configuration;
 
 public enum TraceMethod {
     Accumulating,

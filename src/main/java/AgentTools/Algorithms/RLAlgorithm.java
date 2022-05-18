@@ -1,8 +1,8 @@
 package AgentTools.Algorithms;
 
+import AgentTools.Algorithms.Configuration.AlgoConfiguration;
 import AgentTools.Environments.Environment;
 import AgentTools.Policies.Policy;
-import AgentTools.Util.ValueSpace;
 
 public class RLAlgorithm {
     protected AlgoConfiguration algoConfiguration;

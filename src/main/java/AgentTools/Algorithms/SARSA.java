@@ -1,15 +1,10 @@
 package AgentTools.Algorithms;
 
+import AgentTools.Algorithms.Configuration.AlgoConfiguration;
 import AgentTools.Function.QFunction;
 import AgentTools.Function.TabularQ;
 import AgentTools.Policies.Policy;
 import AgentTools.Policies.PolicyType;
-import AgentTools.Util.ValueSpace;
-import com.sun.jdi.Value;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class SARSA extends RLAlgorithm {
     protected QFunction qFunction;
