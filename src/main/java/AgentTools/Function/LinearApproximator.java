@@ -2,18 +2,21 @@ package AgentTools.Function;
 
 import AgentTools.Util.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class LinearApproximator extends FunctionApproximator {
-    public LinearApproximator(List<Object> params, ValueSpace domain, double learningRate) {
+    Random random;
+    public LinearApproximator(List<Object> params, ValueSpace domain, double learningRate, Random random) {
         super(params, domain, learningRate);
 
         assert (domain instanceof MultiSpace);
+
+        this.random = random;
+    }
+    public LinearApproximator(List<Object> params, ValueSpace domain, double learningRate) {
+        this(params, domain, learningRate, new Random());
     }
 
     @Override
@@ -105,8 +108,14 @@ public class LinearApproximator extends FunctionApproximator {
 
             if (this.getValue(minObj) > this.getValue(maxObj)) {
                 return minInt;
-            } else {
+            } else if (this.getValue(minObj) > this.getValue(maxObj)) {
                 return maxInt;
+            } else {
+                if (this.random.nextDouble() <= 0.5) {
+                    return minInt;
+                } else {
+                    return maxInt;
+                }
             }
         }
         if (actionSpace instanceof FloatSpace) {
@@ -117,8 +126,14 @@ public class LinearApproximator extends FunctionApproximator {
 
             if (this.getValue(minObj) > this.getValue(maxObj)) {
                 return minVal;
-            } else {
+            } else if (this.getValue(minObj) > this.getValue(maxObj)) {
                 return maxVal;
+            } else {
+                if (this.random.nextDouble() <= 0.5) {
+                    return minVal;
+                } else {
+                    return maxVal;
+                }
             }
         }
         if (actionSpace instanceof ListSpace) {
