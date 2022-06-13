@@ -38,7 +38,7 @@ class DeepQNetworkTest {
 
     @org.junit.jupiter.api.BeforeEach
     void setUp() {
-        this.nRuns = 1000;
+        this.nRuns = 20;
         this.nEpochs = 1000;
         this.nStates = 10;
         this.nActions = 10;

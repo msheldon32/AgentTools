@@ -67,18 +67,11 @@ public class DeepQNetwork extends FunctionApproximator{
 
     public INDArray getInputArray(Collection state) {
         INDArray inputRow = Nd4j.create((List<Double>)(state.stream().collect(Collectors.toList())));
-        List<INDArray> input2d = new ArrayList<INDArray>();
-        input2d.add(inputRow);
-        System.out.println("A.5");
-        return Nd4j.create(input2d);
+        return inputRow.reshape(state.size(),1);
     }
 
     public INDArray getOutputArray(double[] rVals) {
-        INDArray outputRow = Nd4j.createFromArray(rVals);
-
-        List<INDArray> output2d = new ArrayList<INDArray>();
-        output2d.add(outputRow);
-        return Nd4j.create(output2d);
+        return Nd4j.createFromArray(rVals).reshape(1,rVals.length);
     }
 
     public double[] getAllQ(INDArray inputArray) {
@@ -90,20 +83,16 @@ public class DeepQNetwork extends FunctionApproximator{
     @Override
     public void fitResult(Object inValue, double newVal) {
         Pair<Collection, Object> inPair = (Pair<Collection, Object>)inValue;
-        System.out.println("A");
         INDArray inputs  = this.getInputArray(inPair.getLeft());
-        System.out.println("B");
 
         double[] rVals = this.getAllQ(inputs);
 
-        //rVals[this.actionMap.get(inPair.getRight())] = newVal;
+        rVals[this.actionMap.get(inPair.getRight())] = newVal;
 
         INDArray outputs = this.getOutputArray(rVals);
-        System.out.println(("-----------------------------------"));
-        System.out.println(outputs);
 
 
-        //this.network.fit(inputs, outputs);
+        this.network.fit(inputs, outputs);
     }
 
     @Override
