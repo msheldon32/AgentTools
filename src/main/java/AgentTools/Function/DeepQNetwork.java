@@ -5,18 +5,15 @@ import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
-import org.nd4j.shade.protobuf.Value;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class DeepQNetwork extends FunctionApproximator{
     /*
-            This is a wrapper for deeplearning4j
+            Powered by deeplearning4j network
      */
 
-    protected MultiLayerConfiguration configuration;
     protected MultiLayerNetwork network;
     protected Random random;
     protected int nActions;
@@ -68,10 +65,24 @@ public class DeepQNetwork extends FunctionApproximator{
         throw new RuntimeException("Deep Q Networks cannot approximate the V Function");
     }
 
-    public double[] getAllQ(Collection state) {
-        INDArray inputs  = Nd4j.create((List<Double>)(state.stream().collect(Collectors.toList())));
+    public INDArray getInputArray(Collection state) {
+        INDArray inputRow = Nd4j.create((List<Double>)(state.stream().collect(Collectors.toList())));
+        List<INDArray> input2d = new ArrayList<INDArray>();
+        input2d.add(inputRow);
+        System.out.println("A.5");
+        return Nd4j.create(input2d);
+    }
 
-        double[] outQ = this.network.output(inputs).toDoubleVector();
+    public INDArray getOutputArray(double[] rVals) {
+        INDArray outputRow = Nd4j.createFromArray(rVals);
+
+        List<INDArray> output2d = new ArrayList<INDArray>();
+        output2d.add(outputRow);
+        return Nd4j.create(output2d);
+    }
+
+    public double[] getAllQ(INDArray inputArray) {
+        double[] outQ = this.network.output(inputArray).toDoubleVector();
 
         return outQ;
     }
@@ -79,15 +90,20 @@ public class DeepQNetwork extends FunctionApproximator{
     @Override
     public void fitResult(Object inValue, double newVal) {
         Pair<Collection, Object> inPair = (Pair<Collection, Object>)inValue;
-        INDArray inputs  = Nd4j.create((List<Double>)(inPair.getLeft().stream().collect(Collectors.toList())));
+        System.out.println("A");
+        INDArray inputs  = this.getInputArray(inPair.getLeft());
+        System.out.println("B");
 
-        double[] r_vals = this.getAllQ(inPair.getLeft());
+        double[] rVals = this.getAllQ(inputs);
 
-        r_vals[this.actionMap.get(inPair.getRight())] = newVal;
+        //rVals[this.actionMap.get(inPair.getRight())] = newVal;
+
+        INDArray outputs = this.getOutputArray(rVals);
+        System.out.println(("-----------------------------------"));
+        System.out.println(outputs);
 
 
-        INDArray outputs = Nd4j.createFromArray(r_vals);
-        this.network.fit(inputs, outputs);
+        //this.network.fit(inputs, outputs);
     }
 
     @Override

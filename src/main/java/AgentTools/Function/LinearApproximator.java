@@ -108,7 +108,7 @@ public class LinearApproximator extends FunctionApproximator {
 
             if (this.getValue(minObj) > this.getValue(maxObj)) {
                 return minInt;
-            } else if (this.getValue(minObj) > this.getValue(maxObj)) {
+            } else if (this.getValue(minObj) < this.getValue(maxObj)) {
                 return maxInt;
             } else {
                 if (this.random.nextDouble() <= 0.5) {
@@ -126,7 +126,7 @@ public class LinearApproximator extends FunctionApproximator {
 
             if (this.getValue(minObj) > this.getValue(maxObj)) {
                 return minVal;
-            } else if (this.getValue(minObj) > this.getValue(maxObj)) {
+            } else if (this.getValue(minObj) < this.getValue(maxObj)) {
                 return maxVal;
             } else {
                 if (this.random.nextDouble() <= 0.5) {

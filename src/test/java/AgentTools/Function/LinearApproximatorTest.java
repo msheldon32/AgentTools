@@ -164,11 +164,15 @@ class LinearApproximatorTest {
             List<Object> stateList = new ArrayList<Object>(nParams-1);
             List<Object> maxList = new ArrayList<Object>(nParams-1);
             List<Object> offList = new ArrayList<Object>(nParams-1);
+            List<Object> minIn = new ArrayList<Object>(nParams-1);
+            List<Object> maxIn = new ArrayList<Object>(nParams-1);
             for (int j = 0; j < nParams - 1; j++) {
                 double realization = (Double) spaces.get(j).getRealization(this.random);
                 stateList.add(realization);
                 maxList.add(realization);
                 offList.add(realization);
+                minIn.add(realization);
+                maxIn.add(realization);
             }
 
             double maxAction = ((double) approximator.getMaxAction(stateList, domain.getSpaces().get(nParams-1)));
@@ -181,13 +185,15 @@ class LinearApproximatorTest {
             } else {
                 assertTrue(false);
             }
+            minIn.add(((FloatSpace)spaces.get(nParams-1)).getMin());
+            maxIn.add(((FloatSpace)spaces.get(nParams-1)).getMax());
 
             maxList.add(maxAction);
             offList.add(oneOff);
 
-            //System.out.format("Max value: %f, off value: %f\n", approximator.getValue(maxList), approximator.getValue(offList));
             assertTrue(approximator.getValue(maxList) > approximator.getValue(offList));
-
+            assertTrue(approximator.getValue(maxList) >= approximator.getValue(maxIn));
+            assertTrue(approximator.getValue(maxList) >= approximator.getValue(minIn));
         }
     }
 }
